@@ -28,7 +28,6 @@ public class DrawManager : MonoBehaviour
     private void OnShowText(string textToShow)
     {
         _textToShow.text = textToShow;
-        _textToShow.gameObject.SetActive(true);
 
         if (textToShow == "Yay! You drew it!")
         {
