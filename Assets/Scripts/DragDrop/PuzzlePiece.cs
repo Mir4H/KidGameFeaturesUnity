@@ -8,7 +8,8 @@ public class PuzzlePiece : MonoBehaviour
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private AudioSource _source;
     [SerializeField] private AudioClip _pickUpClip, _dropClip;
-    private bool _dragging, _placed;
+    private bool _dragging;
+    public bool placed;
     private Vector2 _offset, _originalPosition;
     Camera mainCamera;
     private PuzzleSlot _slot;
@@ -31,7 +32,7 @@ public class PuzzlePiece : MonoBehaviour
 
     private void Update()
     {
-        if (_placed) return;
+        if (placed) return;
         if(!_dragging) return;
         var mousePosition = GetMousePos();
 
@@ -52,7 +53,7 @@ public class PuzzlePiece : MonoBehaviour
         {
             transform.position = _slot.transform.position;
             _slot.Placed();
-            _placed = true;
+            placed = true;
         }
         else
         {
