@@ -1,25 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class LineCollider : MonoBehaviour
 {
     public static event UnityAction<string> ShowText;
     public static event UnityAction TryAgain;
-
-    void Start()
-    {
-    }
+    public static bool CanDrawOut = false;
 
     void Update()
     {
-        if(GameObject.FindGameObjectsWithTag("checkpoint").Length == 0)
+        Debug.Log(NumberScript.CanDraw);
+        if(Input.GetMouseButtonDown(0) && NumberScript.CanDraw)
         {
-            Debug.Log("good job");
+            Time.timeScale = 1f;
+            CanDrawOut = true;
+        } 
+    }
+
+    private void FixedUpdate()
+    {
+        if (GameObject.FindGameObjectsWithTag("checkpoint").Length == 0)
+        {
             ShowText?.Invoke("Yay! You drew it!");
+            Time.timeScale = 0;
         }
     }
 
@@ -31,21 +34,14 @@ public class LineCollider : MonoBehaviour
             Debug.Log("reached checkpoint");
         }
     }
-
-    private void OnTriggerExit2D(Collider2D collision)
+    
+   private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "number" && GameObject.FindGameObjectsWithTag("checkpoint").Length != 0)
         {
+            CanDrawOut = false;
             TryAgain?.Invoke();
-            ShowText?.Invoke("Stay inside the number, try again!");
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "number")
-        {
-            ShowText?.Invoke("Looking Good!");
+            ShowText?.Invoke("Stay inside the number!");
         }
     }
 }

@@ -11,6 +11,9 @@ public class DrawManager : MonoBehaviour
     [SerializeField] private Line _linePrefab;
     [SerializeField] private TextMeshProUGUI _textToShow;
     [SerializeField] private GameObject _outline;
+    private Vector2 mousePos;
+    private bool drawing;
+    private bool GameOver = false;
 
     public const float RESOLUTION = .1f;
     private Line _currentLine;
@@ -31,23 +34,30 @@ public class DrawManager : MonoBehaviour
 
         if (textToShow == "Yay! You drew it!")
         {
+            GameOver = true;
             _outline.SetActive(false);
-            Time.timeScale = 0;
         }
     }
 
     void Start()
     {
         _cam = Camera.main;
+        Time.timeScale = 0;
     }
 
-
-    void Update()
+    private void Update()
     {
-        Vector2 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
+        if (NumberScript.CanDraw && !GameOver) Time.timeScale = 1f;
+        if (Input.GetMouseButtonDown(0))
+        {
+            _currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
+        }
+        drawing = Input.GetMouseButton(0) ? true : false;
+    }
 
-        if (Input.GetMouseButtonDown(0)) _currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
-
-        if (Input.GetMouseButton(0)) _currentLine.SetPosition(mousePos);
+    void FixedUpdate()
+    {
+        if (drawing && LineCollider.CanDrawOut) _currentLine.SetPosition(mousePos);
     }
 }
